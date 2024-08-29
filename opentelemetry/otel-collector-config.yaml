@@ -6,10 +6,10 @@ receivers:
 
 exporters:
   clickhouse:
-    endpoint: "<ClickHouse_Endpoint>"
-    database: "<Database_Name>"
-    username: "<Username>"
-    password: "<Password>"
+    endpoint: "${CLICKHOUSE_ENDPOINT}"
+    database: "${CLICKHOUSE_DATABASE}"
+    username: "${CLICKHOUSE_USERNAME}"
+    password: "${CLICKHOUSE_PASSWORD}"
 
 service:
   pipelines:
