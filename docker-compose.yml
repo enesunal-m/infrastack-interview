@@ -1,8 +1,8 @@
 services:
   otel-collector:
-    image: otel/opentelemetry-collector:latest
+    image: otel/opentelemetry-collector-contrib:latest
     ports:
-      - "4317:4317"
+      - "4317:4317" # gRPC port for receiving traces
     environment:
       CLICKHOUSE_ENDPOINT: ${CLICKHOUSE_ENDPOINT}
       CLICKHOUSE_DATABASE: ${CLICKHOUSE_DATABASE}
