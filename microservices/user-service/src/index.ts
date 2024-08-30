@@ -1,12 +1,14 @@
-import express from "express";
 import { register, DiagLogLevel } from "infrastack-interview-fs-meu-20240829";
-import axios from "axios";
 
+// Register OpenTelemetry before importing Express
 register({
   endpoint: "http://localhost:4317",
   instruments: ["http", "express"],
   logLevel: DiagLogLevel.INFO,
 });
+
+import express from "express";
+import axios from "axios";
 
 const app = express();
 const port = 3001;
