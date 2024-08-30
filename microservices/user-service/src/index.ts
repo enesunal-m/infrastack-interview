@@ -54,6 +54,8 @@ app.post("/users/:id/order", async (req, res) => {
   }
 });
 
-app.listen(port, () => {
-  console.log(`User service listening at http://localhost:${port}`);
-});
+setTimeout(() => {
+  app.listen(port, () => {
+    console.log(`Service listening at http://localhost:${port}`);
+  });
+}, 1000);

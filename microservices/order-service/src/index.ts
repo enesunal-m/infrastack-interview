@@ -54,6 +54,8 @@ app.get("/orders", (req, res) => {
   res.json(orders);
 });
 
-app.listen(port, () => {
-  console.log(`Order service listening at http://localhost:${port}`);
-});
+setTimeout(() => {
+  app.listen(port, () => {
+    console.log(`Service listening at http://localhost:${port}`);
+  });
+}, 1000);

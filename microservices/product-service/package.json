@@ -8,7 +8,7 @@
   },
   "dependencies": {
     "express": "^4.17.1",
-    "infrastack-interview-fs-meu-20240829": "^1.2.3"
+    "infrastack-interview-fs-meu-20240829": "^1.2.5"
   },
   "devDependencies": {
     "@types/express": "^4.17.13",
