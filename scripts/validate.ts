@@ -1,10 +1,11 @@
-import { register } from "infrastack-interview-fs-meu-20240829";
-import { trace, context, SpanStatusCode } from "@opentelemetry/api";
+import { register, DiagLogLevel } from "infrastack-interview-fs-meu-20240829";
+import { trace, SpanStatusCode } from "@opentelemetry/api";
 
-// Register OpenTelemetry instrumentation
+// Register OpenTelemetry instrumentation with DEBUG log level
 register({
   endpoint: "http://localhost:4317",
   instruments: ["http", "express"],
+  logLevel: DiagLogLevel.DEBUG, // Set to DEBUG for development, INFO or ERROR for production
 });
 
 const tracer = trace.getTracer("example-tracer");
@@ -24,11 +25,37 @@ function generateRandomSpan() {
         message: "Random error occurred",
       });
     }
+    span.setAttribute("custom.attribute", "test-value");
+    console.log(`Span generated: ${span.spanContext().traceId}`);
     span.end();
   }, workDuration);
 }
 
-// Generate spans every second
-setInterval(generateRandomSpan, 1000);
+console.log("Starting to send telemetry data...");
 
-console.log("Telemetry data is being sent...");
+// Generate spans every second for 1 minute
+const interval = setInterval(generateRandomSpan, 1000);
+
+// Stop after 1 minute
+setTimeout(() => {
+  clearInterval(interval);
+  console.log("Finished sending telemetry data. Exiting in 5 seconds...");
+
+  // Wait for 5 seconds before exiting to allow any pending spans to be sent
+  setTimeout(() => {
+    console.log("Exiting.");
+    process.exit(0);
+  }, 5000);
+}, 60000);
+
+// Handle uncaught exceptions
+process.on("uncaughtException", (error) => {
+  console.error("Uncaught Exception:", error);
+  process.exit(1);
+});
+
+// Handle unhandled promise rejections
+process.on("unhandledRejection", (reason, promise) => {
+  console.error("Unhandled Rejection at:", promise, "reason:", reason);
+  process.exit(1);
+});
