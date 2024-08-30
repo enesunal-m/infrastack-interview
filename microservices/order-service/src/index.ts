@@ -1,16 +1,23 @@
 import { register, DiagLogLevel } from "infrastack-interview-fs-meu-20240829";
 
 register({
-  endpoint: "http://localhost:4317",
+  endpoint: process.env.OTEL_EXPORTER_OTLP_ENDPOINT || "http://localhost:4317",
   instruments: ["http", "express"],
   logLevel: DiagLogLevel.INFO,
+  compression: process.env.OTEL_EXPORTER_OTLP_COMPRESSION as
+    | "gzip"
+    | "none"
+    | undefined,
+  exporter: process.env.OTEL_LOGS_EXPORTER as "otlp" | undefined,
 });
 
 import express from "express";
 import axios from "axios";
 
 const app = express();
-const port = 3003;
+const port = process.env.ORDER_SERVICE_PORT
+  ? parseInt(process.env.ORDER_SERVICE_PORT)
+  : 3001;
 
 app.use(express.json());
 
