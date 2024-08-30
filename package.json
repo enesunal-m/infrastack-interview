@@ -15,5 +15,8 @@
   ],
   "author": "Muhammed Enes Unal",
   "license": "ISC",
-  "description": "A basic monolith project for generating and visualizing mock OpenTelemetry data."
+  "description": "A basic monolith project for generating and visualizing mock OpenTelemetry data.",
+  "dependencies": {
+    "infrastack-interview-fs-meu-20240829": "^1.0.0"
+  }
 }
