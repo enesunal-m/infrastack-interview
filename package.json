@@ -5,9 +5,9 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "validate": "ts-node scripts/validate.ts",
-    "start:user": "cd microservices/user-service && npm start",
-    "start:product": "cd microservices/product-service && npm start",
-    "start:order": "cd microservices/order-service && npm start",
+    "start:user": "OTEL_LOGS_EXPORTER=otlp cd microservices/user-service && npm start",
+    "start:product": "OTEL_LOGS_EXPORTER=otlp cd microservices/product-service && npm start",
+    "start:order": "OTEL_LOGS_EXPORTER=otlp cd microservices/order-service && npm start",
     "start:all": "concurrently \"npm run start:user\" \"npm run start:product\" \"npm run start:order\"",
     "install:all": "npm install && cd microservices/user-service && npm install && cd ../product-service && npm install && cd ../order-service && npm install"
   },
