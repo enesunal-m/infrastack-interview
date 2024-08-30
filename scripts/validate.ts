@@ -1,4 +1,4 @@
-import { register } from "opentelemetry-wrapper";
+import { register } from "infrastack-interview-fs-meu-20240829";
 
 // Register OpenTelemetry instrumentation
 register({
