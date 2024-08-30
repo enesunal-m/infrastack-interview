@@ -8,8 +8,14 @@
     "start:user": "cd microservices/user-service && node -r dotenv/config -r ts-node/register src/index.ts dotenv_config_path=../../.env",
     "start:product": "cd microservices/product-service && node -r dotenv/config -r ts-node/register src/index.ts dotenv_config_path=../../.env",
     "start:order": "cd microservices/order-service && node -r dotenv/config -r ts-node/register src/index.ts dotenv_config_path=../../.env",
-    "start:all": "concurrently \"npm run start:user\" \"npm run start:product\" \"npm run start:order\"",
-    "install:all": "npm install && cd microservices/user-service && npm install && cd ../product-service && npm install && cd ../order-service && npm install"
+    "start:microservices": "concurrently \"npm run start:user\" \"npm run start:product\" \"npm run start:order\"",
+    "start:dashboard": "cd dashboard && npm run dev",
+    "start": "concurrently \"npm run start:microservices\" \"npm run start:dashboard\"",
+    "install:microservices": "cd microservices/user-service && npm install && cd ../product-service && npm install && cd ../order-service && npm install",
+    "install:dashboard": "cd dashboard && npm install",
+    "install:all": "npm install && npm run install:microservices && npm run install:dashboard",
+    "build:dashboard": "cd dashboard && npm run build",
+    "build": "npm run build:dashboard"
   },
   "keywords": [
     "infrastack",
