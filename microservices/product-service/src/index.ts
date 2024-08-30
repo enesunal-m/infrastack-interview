@@ -1,4 +1,3 @@
-import express from "express";
 import { register, DiagLogLevel } from "infrastack-interview-fs-meu-20240829";
 
 register({
@@ -6,6 +5,8 @@ register({
   instruments: ["http", "express"],
   logLevel: DiagLogLevel.INFO,
 });
+
+import express from "express";
 
 const app = express();
 const port = 3002;
