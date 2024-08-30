@@ -18,12 +18,12 @@
   "license": "ISC",
   "description": "A basic monolith project for generating and visualizing mock OpenTelemetry data.",
   "dependencies": {
-    "infrastack-interview-fs-meu-20240829": "^1.0.0",
-    "@opentelemetry/api": "^1.4.1"
+    "@opentelemetry/api": "^1.4.1",
+    "infrastack-interview-fs-meu-20240829": "^1.2.3"
   },
   "devDependencies": {
     "@types/node": "^22.5.1",
-    "typescript": "^5.5.4",
-    "ts-node": "^10.9.1"
+    "ts-node": "^10.9.1",
+    "typescript": "^5.5.4"
   }
 }
