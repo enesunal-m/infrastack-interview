@@ -1,3 +1,8 @@
+import * as dotenv from "dotenv";
+import * as path from "path";
+
+dotenv.config({ path: path.resolve(__dirname, "../../.env") });
+
 import { register, DiagLogLevel } from "infrastack-interview-fs-meu-20240829";
 
 register({

@@ -5,9 +5,9 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "validate": "ts-node scripts/validate.ts",
-    "start:user": "cd microservices/user-service && node -r dotenv/config ../../node_modules/.bin/ts-node src/index.ts",
-    "start:product": "cd microservices/product-service && node -r dotenv/config ../../node_modules/.bin/ts-node src/index.ts",
-    "start:order": "cd microservices/order-service && node -r dotenv/config ../../node_modules/.bin/ts-node src/index.ts",
+    "start:user": "cd microservices/user-service && node -r dotenv/config -r ts-node/register src/index.ts dotenv_config_path=../../.env",
+    "start:product": "cd microservices/product-service && node -r dotenv/config -r ts-node/register src/index.ts dotenv_config_path=../../.env",
+    "start:order": "cd microservices/order-service && node -r dotenv/config -r ts-node/register src/index.ts dotenv_config_path=../../.env",
     "start:all": "concurrently \"npm run start:user\" \"npm run start:product\" \"npm run start:order\"",
     "install:all": "npm install && cd microservices/user-service && npm install && cd ../product-service && npm install && cd ../order-service && npm install"
   },

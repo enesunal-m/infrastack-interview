@@ -1,3 +1,8 @@
+import * as dotenv from "dotenv";
+import * as path from "path";
+
+dotenv.config({ path: path.resolve(__dirname, "../../.env") });
+
 import { register, DiagLogLevel } from "infrastack-interview-fs-meu-20240829";
 
 register({
@@ -17,7 +22,7 @@ import axios from "axios";
 const app = express();
 const port = process.env.PRODUCT_SERVICE_PORT
   ? parseInt(process.env.PRODUCT_SERVICE_PORT)
-  : 3001;
+  : 3002;
 
 app.use(express.json());
 
