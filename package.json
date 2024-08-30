@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "validate": "ts-node scripts/validate.ts"
   },
   "keywords": [
     "infrastack",
@@ -17,10 +18,12 @@
   "license": "ISC",
   "description": "A basic monolith project for generating and visualizing mock OpenTelemetry data.",
   "dependencies": {
-    "infrastack-interview-fs-meu-20240829": "^1.0.0"
+    "infrastack-interview-fs-meu-20240829": "^1.0.0",
+    "@opentelemetry/api": "^1.4.1"
   },
   "devDependencies": {
     "@types/node": "^22.5.1",
-    "typescript": "^5.5.4"
+    "typescript": "^5.5.4",
+    "ts-node": "^10.9.1"
   }
 }
