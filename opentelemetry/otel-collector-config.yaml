@@ -25,8 +25,9 @@ exporters:
       enabled: true
       num_consumers: 10
       queue_size: 5000
-    tls:
-      insecure_skip_verify: false
+    logs_table_name: otel_logs
+    traces_table_name: otel_traces
+    metrics_table_name: otel_metrics
 
 service:
   pipelines:
