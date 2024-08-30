@@ -1,0 +1,19 @@
+{
+  "name": "infrastack-interview",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "infrastack",
+    "interview",
+    "express",
+    "ai",
+    "opentelemetry",
+    "nextjs"
+  ],
+  "author": "Muhammed Enes Unal",
+  "license": "ISC",
+  "description": "A basic monolith project for generating and visualizing mock OpenTelemetry data."
+}
