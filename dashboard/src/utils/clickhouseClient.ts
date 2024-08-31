@@ -1,11 +1,10 @@
-import axios from "axios";
+"use server";
+import { createClient } from "@clickhouse/client";
 
-const clickhouseClient = axios.create({
-  baseURL: process.env.CLICKHOUSE_ENDPOINT,
-  auth: {
-    username: process.env.CLICKHOUSE_USERNAME || "",
-    password: process.env.CLICKHOUSE_PASSWORD || "",
-  },
+const clickhouseClient = createClient({
+  url: process.env.CLICKHOUSE_ENDPOINT || "http://localhost:8123",
+  username: process.env.CLICKHOUSE_USERNAME || "default",
+  password: process.env.CLICKHOUSE_PASSWORD || "",
 });
 
 function formatDateTime(date: string): string {
@@ -19,7 +18,6 @@ export async function getServiceMetrics(
 ) {
   const formattedStartTime = formatDateTime(startTime);
   const formattedEndTime = formatDateTime(endTime);
-
   const query = `
     SELECT
       toStartOfInterval(Timestamp, INTERVAL 5 MINUTE) AS time_bucket,
@@ -27,22 +25,26 @@ export async function getServiceMetrics(
       avg(Duration) / 1000000 AS avg_latency_ms,
       (countIf(StatusCode != 'OK') / count()) * 100 AS error_rate
     FROM otel_traces
-    WHERE ServiceName = '${serviceName}'
-      AND Timestamp BETWEEN parseDateTimeBestEffort('${formattedStartTime}') AND parseDateTimeBestEffort('${formattedEndTime}')
+    WHERE ServiceName = {serviceName:String}
+      AND Timestamp BETWEEN parseDateTimeBestEffort({startTime:String}) AND parseDateTimeBestEffort({endTime:String})
     GROUP BY time_bucket
     ORDER BY time_bucket ASC
   `;
 
   try {
-    const response = await clickhouseClient.post("", query, {
-      headers: { "Content-Type": "text/plain" },
+    const result = await clickhouseClient.query({
+      query,
+      query_params: {
+        serviceName,
+        startTime: formattedStartTime,
+        endTime: formattedEndTime,
+      },
+      format: "JSONEachRow",
     });
-    return response.data;
+
+    return result.json();
   } catch (error) {
-    console.error(
-      "Error querying ClickHouse:",
-      error.response?.data || error.message,
-    );
+    console.error("Error querying ClickHouse:", error);
     throw new Error("Failed to fetch service metrics");
   }
 }
@@ -57,21 +59,23 @@ export async function getRecentTraces(serviceName: string) {
       SpanName,
       SpanKind
     FROM otel_traces
-    WHERE ServiceName = '${serviceName}'
+    WHERE ServiceName = {serviceName:String}
     ORDER BY Timestamp DESC
     LIMIT 10
   `;
 
   try {
-    const response = await clickhouseClient.post("", query, {
-      headers: { "Content-Type": "text/plain" },
+    const result = await clickhouseClient.query({
+      query,
+      query_params: {
+        serviceName,
+      },
+      format: "JSONEachRow",
     });
-    return response.data;
+
+    return result.json();
   } catch (error) {
-    console.error(
-      "Error querying ClickHouse:",
-      error.response?.data || error.message,
-    );
+    console.error("Error querying ClickHouse:", error);
     throw new Error("Failed to fetch recent traces");
   }
 }
