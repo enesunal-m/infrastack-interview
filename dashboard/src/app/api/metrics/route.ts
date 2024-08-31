@@ -4,12 +4,14 @@ import { getServiceMetrics } from "@/utils/clickhouseClient";
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
   const service = searchParams.get("service");
-  const start = searchParams.get("start");
-  const end = searchParams.get("end");
+  const start =
+    searchParams.get("start") ||
+    new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
+  const end = searchParams.get("end") || new Date().toISOString();
 
-  if (!service || !start || !end) {
+  if (!service) {
     return NextResponse.json(
-      { error: "Missing required parameters" },
+      { error: "Missing service parameter" },
       { status: 400 },
     );
   }

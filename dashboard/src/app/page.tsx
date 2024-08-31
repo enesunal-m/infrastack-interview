@@ -1,4 +1,3 @@
-import React from "react";
 import ServiceMap from "@/components/ServiceMap";
 import ServiceList from "@/components/ServiceList";
 import ServiceDetail from "@/components/ServiceDetail";
