@@ -5,9 +5,9 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "validate": "ts-node scripts/validate.ts",
-    "start:user": "cd microservices/user-service && node -r dotenv/config -r ts-node/register src/index.ts dotenv_config_path=../../.env",
-    "start:product": "cd microservices/product-service && node -r dotenv/config -r ts-node/register src/index.ts dotenv_config_path=../../.env",
-    "start:order": "cd microservices/order-service && node -r dotenv/config -r ts-node/register src/index.ts dotenv_config_path=../../.env",
+    "start:user": "OTEL_SERVICE_NAME=$OTEL_SERVICE_NAME_USER node -r dotenv/config -r ts-node/register microservices/user-service/src/index.ts",
+    "start:product": "OTEL_SERVICE_NAME=$OTEL_SERVICE_NAME_PRODUCT node -r dotenv/config -r ts-node/register microservices/product-service/src/index.ts",
+    "start:order": "OTEL_SERVICE_NAME=$OTEL_SERVICE_NAME_ORDER node -r dotenv/config -r ts-node/register microservices/order-service/src/index.ts",
     "start:microservices": "concurrently \"npm run start:user\" \"npm run start:product\" \"npm run start:order\"",
     "start:dashboard": "cd dashboard && npm run dev",
     "start": "concurrently \"npm run start:microservices\" \"npm run start:dashboard\"",

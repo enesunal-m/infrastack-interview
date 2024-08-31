@@ -1,9 +1,9 @@
 import * as dotenv from "dotenv";
 import * as path from "path";
-
-dotenv.config({ path: path.resolve(__dirname, "../../.env") });
-
+dotenv.config({ path: path.resolve(__dirname, "../../../.env") });
 import { register, DiagLogLevel } from "infrastack-interview-fs-meu-20240829";
+import express from "express";
+import { trace } from "@opentelemetry/api";
 
 register({
   endpoint: process.env.OTEL_EXPORTER_OTLP_ENDPOINT || "http://localhost:4317",
@@ -15,9 +15,6 @@ register({
     | undefined,
   exporter: process.env.OTEL_LOGS_EXPORTER as "otlp" | undefined,
 });
-
-import express from "express";
-import axios from "axios";
 
 const app = express();
 const port = process.env.PRODUCT_SERVICE_PORT
@@ -36,16 +33,24 @@ app.get("/products", (req, res) => {
 });
 
 app.get("/products/:id", (req, res) => {
-  const product = products.find((p) => p.id === parseInt(req.params.id));
-  if (product) {
-    res.json(product);
-  } else {
-    res.status(404).json({ error: "Product not found" });
+  const tracer = trace.getTracer("product-service");
+  const span = tracer.startSpan("get_product");
+
+  try {
+    const product = products.find((p) => p.id === parseInt(req.params.id));
+    if (product) {
+      res.json(product);
+    } else {
+      res.status(404).json({ error: "Product not found" });
+    }
+  } catch (error) {
+    if (error instanceof Error) span.recordException(error);
+    res.status(500).json({ error: "Internal server error" });
+  } finally {
+    span.end();
   }
 });
 
-setTimeout(() => {
-  app.listen(port, () => {
-    console.log(`Service listening at http://localhost:${port}`);
-  });
-}, 1000);
+app.listen(port, () => {
+  console.log(`Product service listening at http://localhost:${port}`);
+});
