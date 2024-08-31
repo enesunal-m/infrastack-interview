@@ -1,18 +1,15 @@
-import MetricsOverview from "@/components/MetricsOverview";
-import TraceList from "@/components/TraceList";
-import ServiceHealth from "@/components/ServiceHealth";
+import React from "react";
+import ServiceMap from "@/components/ServiceMap";
+import ServiceList from "@/components/ServiceList";
+import ServiceDetail from "@/components/ServiceDetail";
 
 export default function Home() {
   return (
-    <main className="flex min-h-screen flex-col p-24">
-      <h1 className="text-4xl font-bold mb-8">InfraStack Observer Dashboard</h1>
-      <div className="space-y-8">
-        <MetricsOverview />
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          <ServiceHealth />
-          <TraceList />
-        </div>
-      </div>
+    <main className="p-4 space-y-8">
+      <h1 className="text-3xl font-bold">Service Dashboard</h1>
+      <ServiceMap />
+      <ServiceList />
+      <ServiceDetail serviceName="User Service" />
     </main>
   );
 }
