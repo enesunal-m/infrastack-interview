@@ -2,8 +2,6 @@ import * as dotenv from "dotenv";
 import * as path from "path";
 dotenv.config({ path: path.resolve(__dirname, "../../../.env") });
 import { register, DiagLogLevel } from "infrastack-interview-fs-meu-20240829";
-import express from "express";
-import axios from "axios";
 import { trace, context, propagation } from "@opentelemetry/api";
 
 register({
@@ -16,6 +14,10 @@ register({
     | undefined,
   exporter: process.env.OTEL_LOGS_EXPORTER as "otlp" | undefined,
 });
+
+import { axiosRetry } from "../utils/axiosRetry";
+
+import express from "express";
 
 const app = express();
 const port = process.env.USER_SERVICE_PORT
@@ -54,38 +56,56 @@ app.post("/users/:id/order", async (req, res) => {
       const headers = {};
       propagation.inject(context.active(), headers);
 
-      const orderResponse = await axios.post(
-        "http://localhost:3003/orders",
-        {
-          userId,
-          productId,
-        },
-        { headers },
-      );
+      const orderResponse = await axiosRetry({
+        url: "http://localhost:3003/orders",
+        method: "post",
+        data: { userId, productId },
+        headers,
+        timeout: 5000,
+        retry: 3,
+        retryDelay: 1000,
+      });
 
       res.json(orderResponse.data);
     });
   } catch (error) {
-    if (error instanceof Error) span.recordException(error);
-    res.status(500).json({ error: "Failed to create order" });
+    if (error instanceof Error) {
+      console.error("Error creating order:", error.message);
+      span.recordException(error);
+      res
+        .status(500)
+        .json({ error: "Failed to create order", details: error.message });
+    }
   } finally {
     span.end();
   }
 });
 
-// Simulate user activity
-setInterval(() => {
+// Simulate user activity with error handling and retry logic
+const simulateUserActivity = async () => {
   const userId = Math.floor(Math.random() * users.length) + 1;
   const productId = Math.floor(Math.random() * 2) + 1;
 
-  axios
-    .post(`http://localhost:${port}/users/${userId}/order`, { productId })
-    .then(() => console.log(`User ${userId} placed an order`))
-    .catch((error) =>
-      console.error(`Error placing order for user ${userId}:`, error.message),
-    );
-}, 5000);
+  try {
+    await axiosRetry({
+      url: `http://localhost:${port}/users/${userId}/order`,
+      method: "post",
+      data: { productId },
+      timeout: 5000,
+      retry: 3,
+      retryDelay: 1000,
+    });
+    console.log(`User ${userId} placed an order`);
+  } catch (error) {
+    if (error instanceof Error)
+      console.error(`Error placing order for user ${userId}:`, error.message);
+  }
+};
 
 app.listen(port, () => {
   console.log(`User service listening at http://localhost:${port}`);
+  // Start simulating user activity after a delay to ensure all services are up
+  setTimeout(() => {
+    setInterval(simulateUserActivity, 1000);
+  }, 10000); // Wait 10 seconds before starting simulation
 });

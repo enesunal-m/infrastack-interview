@@ -2,8 +2,7 @@ import * as dotenv from "dotenv";
 import * as path from "path";
 dotenv.config({ path: path.resolve(__dirname, "../../../.env") });
 import { register, DiagLogLevel } from "infrastack-interview-fs-meu-20240829";
-import express from "express";
-import axios from "axios";
+
 import { trace, context, propagation } from "@opentelemetry/api";
 
 register({
@@ -16,6 +15,10 @@ register({
     | undefined,
   exporter: process.env.OTEL_LOGS_EXPORTER as "otlp" | undefined,
 });
+
+import { axiosRetry } from "../utils/axiosRetry";
+
+import express from "express";
 
 const app = express();
 const port = process.env.ORDER_SERVICE_PORT
@@ -38,14 +41,24 @@ app.post("/orders", async (req, res) => {
       const headers = {};
       propagation.inject(context.active(), headers);
 
-      const userResponse = await axios.get(
-        `http://localhost:3001/users/${userId}`,
-        { headers },
-      );
-      const productResponse = await axios.get(
-        `http://localhost:3002/products/${productId}`,
-        { headers },
-      );
+      const [userResponse, productResponse] = await Promise.all([
+        axiosRetry({
+          url: `http://localhost:3001/users/${userId}`,
+          method: "get",
+          headers,
+          timeout: 5000,
+          retry: 3,
+          retryDelay: 1000,
+        }),
+        axiosRetry({
+          url: `http://localhost:3002/products/${productId}`,
+          method: "get",
+          headers,
+          timeout: 5000,
+          retry: 3,
+          retryDelay: 1000,
+        }),
+      ]);
 
       const order = {
         id: orders.length + 1,

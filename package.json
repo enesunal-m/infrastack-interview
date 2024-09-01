@@ -5,9 +5,9 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "validate": "ts-node scripts/validate.ts",
-    "start:user": "OTEL_SERVICE_NAME=$OTEL_SERVICE_NAME_USER node -r dotenv/config -r ts-node/register microservices/user-service/src/index.ts",
-    "start:product": "OTEL_SERVICE_NAME=$OTEL_SERVICE_NAME_PRODUCT node -r dotenv/config -r ts-node/register microservices/product-service/src/index.ts",
-    "start:order": "OTEL_SERVICE_NAME=$OTEL_SERVICE_NAME_ORDER node -r dotenv/config -r ts-node/register microservices/order-service/src/index.ts",
+    "start:user": "cross-env OTEL_SERVICE_NAME=user-service ts-node -r dotenv/config microservices/user-service/src/index.ts",
+    "start:product": "cross-env OTEL_SERVICE_NAME=product-service ts-node -r dotenv/config microservices/product-service/src/index.ts",
+    "start:order": "cross-env OTEL_SERVICE_NAME=order-service ts-node -r dotenv/config microservices/order-service/src/index.ts",
     "start:microservices": "concurrently \"npm run start:user\" \"npm run start:product\" \"npm run start:order\"",
     "start:dashboard": "cd dashboard && npm run dev",
     "start": "concurrently \"npm run start:microservices\" \"npm run start:dashboard\"",
@@ -39,7 +39,8 @@
     "@types/express": "^4.17.13",
     "@types/node": "^22.5.1",
     "concurrently": "^6.2.0",
-    "ts-node": "^10.9.1",
+    "cross-env": "^7.0.3",
+    "ts-node": "^10.9.2",
     "typescript": "^5.5.4"
   }
 }

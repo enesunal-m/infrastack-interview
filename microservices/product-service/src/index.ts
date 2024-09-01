@@ -2,7 +2,6 @@ import * as dotenv from "dotenv";
 import * as path from "path";
 dotenv.config({ path: path.resolve(__dirname, "../../../.env") });
 import { register, DiagLogLevel } from "infrastack-interview-fs-meu-20240829";
-import express from "express";
 import { trace } from "@opentelemetry/api";
 
 register({
@@ -15,6 +14,8 @@ register({
     | undefined,
   exporter: process.env.OTEL_LOGS_EXPORTER as "otlp" | undefined,
 });
+
+import express from "express";
 
 const app = express();
 const port = process.env.PRODUCT_SERVICE_PORT
